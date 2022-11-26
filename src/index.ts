@@ -1,10 +1,18 @@
-import { program } from 'commander';
+import { program, InvalidArgumentError } from 'commander';
 import figlet from 'figlet';
 
 program.description('Ho ho ho');
 program.version('1');
 
-program.requiredOption('-d, --day <number>', 'The day to run', /[0-9][0-9]?/);
+function parseDay(value: string, _: number): number {
+  const parsedValue = parseInt(value, 10);
+  if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 25) {
+    throw new InvalidArgumentError("That's not an advent day");
+  }
+  return parsedValue;
+}
+
+program.option<number>('-d, --day <number>', 'The day to run', parseDay);
 
 program.parse();
 
