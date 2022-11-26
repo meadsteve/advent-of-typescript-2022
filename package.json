@@ -6,6 +6,8 @@
     "node": ">= 19.1.0 <20"
   },
   "devDependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/figlet": "^1.5.5",
     "@types/jest": "~29.1",
     "@types/node": "~16",
     "@typescript-eslint/eslint-plugin": "~5.39",
@@ -18,12 +20,10 @@
     "rimraf": "~3.0",
     "ts-jest": "~29.0",
     "tsutils": "~3.21",
-    "typescript": "~4.8",
-    "@types/commander": "^2.12.2",
-    "@types/figlet": "^1.5.5"
+    "typescript": "~4.8"
   },
   "scripts": {
-    "start": "node build/src/main.js",
+    "solve": "ts-node src/index.ts",
     "clean": "rimraf coverage build tmp",
     "prebuild": "npm run lint",
     "build": "tsc -p tsconfig.json",
@@ -39,6 +39,7 @@
   "dependencies": {
     "commander": "^9.4.1",
     "figlet": "^1.5.2",
+    "ts-node": "^10.9.1",
     "tslib": "~2.4"
   }
 }

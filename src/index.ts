@@ -4,7 +4,7 @@ import figlet from 'figlet';
 program.description('Ho ho ho');
 program.version('1');
 
-program.requiredOption('-d, --day <number>', 'The day to run');
+program.requiredOption('-d, --day <number>', 'The day to run', /[0-9][0-9]?/);
 
 program.parse();
 
