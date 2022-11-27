@@ -4,6 +4,7 @@ import figlet from 'figlet';
 program.description('Ho ho ho');
 program.version('1');
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function parseDay(value: string, _: number): number {
   const parsedValue = parseInt(value, 10);
   if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 25) {

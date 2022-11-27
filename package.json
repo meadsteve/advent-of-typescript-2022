@@ -5,6 +5,7 @@
   "engines": {
     "node": ">= 19.1.0 <20"
   },
+  "type":"module",
   "devDependencies": {
     "@types/commander": "^2.12.2",
     "@types/figlet": "^1.5.5",
