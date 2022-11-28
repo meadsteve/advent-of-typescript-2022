@@ -1,6 +1,6 @@
 import { program, InvalidArgumentError } from 'commander';
 import figlet from 'figlet';
-import * as day01 from './day01/index';
+//import * as day01 from './day01/index';
 
 program.description('Ho ho ho');
 program.version('1');
@@ -24,11 +24,14 @@ function parsePart(value: string, _: number): number {
 }
 
 interface Day {
-  runPartOne:  () => Promise<string>;
+  runPartOne: () => Promise<string>;
   runPartTwo: () => Promise<string>;
 }
 
-function runPart({ runPartOne, runPartTwo }: Day, part: number): Promise<string> {
+function runPart(
+  { runPartOne, runPartTwo }: Day,
+  part: number,
+): Promise<string> {
   if (part === 1) {
     return runPartOne();
   } else if (part === 2) {
@@ -48,8 +51,10 @@ if (options.day && options.part) {
   console.log(`Solving day ${options.day} part ${options.part}`);
   switch (options.day) {
     case 1:
-      runPart(day01, options.part).then(
-        answer => console.log(`The answer is: ${answer}`)
-      );
+      console.log('TODO');
+
+    // runPart(day01, options.part).then(
+    //   answer => console.log(`The answer is: ${answer}`)
+    // );
   }
 }
