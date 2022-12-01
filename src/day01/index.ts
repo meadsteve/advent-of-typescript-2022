@@ -21,3 +21,7 @@ export async function solvePartOne() {
   const calories = elfCalories(input);
   return (await largest(calories)).toString();
 }
+
+export async function solvePartTwo() {
+  return 'TODO';
+}
