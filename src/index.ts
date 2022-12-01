@@ -1,7 +1,6 @@
 import { program, InvalidArgumentError } from 'commander';
 import figlet from 'figlet';
 import * as day01 from './day01/index';
-import { solvePartOne } from './day01/index';
 
 program.description('Ho ho ho');
 program.version('1');
