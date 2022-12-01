@@ -1,6 +1,7 @@
 import {
   fromAsyncGenerator,
   largest,
+  largestN,
   slidingWindow,
   toAsyncGenerator,
 } from '../src/asyncHelpers';
@@ -20,5 +21,12 @@ describe('async helpers', () => {
     const input = toAsyncGenerator([1, 2, 5, 4, 3]);
     const result = await largest(input);
     expect(result).toEqual(5);
+  });
+
+  it('can find the largest N items in a stream', async function () {
+    const input = toAsyncGenerator([1, 5, 4, 1, 1, 1, 5, 7, 3, 7]);
+    const result = (await largestN(input, 3)).sort();
+    const expected = [7, 7, 5].sort();
+    expect(result).toEqual(expected);
   });
 });

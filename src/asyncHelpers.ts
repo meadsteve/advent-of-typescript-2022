@@ -48,3 +48,27 @@ export async function largest(input: AsyncGenerator<number>): Promise<number> {
   }
   return largest;
 }
+
+export async function largestN(
+  input: AsyncGenerator<number>,
+  number: number,
+): Promise<number[]> {
+  const largest: number[] = [];
+  for (let i = 0; i < number; i++) {
+    const next = await input.next();
+    if (next.done) {
+      return largest;
+    }
+    largest.push(next.value);
+  }
+  for await (let current of input) {
+    for (let i = 0; i < number; i++) {
+      if (current > largest[i]) {
+        // Swap the variables so we keep this new largest number
+        // and check if the previous one is larger than the others
+        [largest[i], current] = [current, largest[i]];
+      }
+    }
+  }
+  return largest;
+}
