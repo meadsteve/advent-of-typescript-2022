@@ -40,7 +40,7 @@ export async function* slidingWindow<T>(
 }
 
 export async function largest(input: AsyncGenerator<number>): Promise<number> {
-  let largest = 0;
+  let largest = (await input.next()).value;
   for await (const current of input) {
     if (current > largest) {
       largest = current;
