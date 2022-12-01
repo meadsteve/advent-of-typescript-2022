@@ -1,5 +1,5 @@
 import { fromAsyncGenerator, toAsyncGenerator } from '../../src/asyncHelpers';
-import { elfCalories, solvePartOne } from '../../src/day01';
+import { elfCalories, solvePartOne, solvePartTwo } from '../../src/day01';
 
 describe('day one', () => {
   it('can add up elves calories from a list', async function () {
@@ -26,5 +26,10 @@ describe('day one', () => {
   it('can solve part one', async function () {
     const solution = await solvePartOne();
     expect(solution).toBe('70296');
+  });
+
+  it('can solve part two', async function () {
+    const solution = await solvePartTwo();
+    expect(solution).toBe('12');
   });
 });

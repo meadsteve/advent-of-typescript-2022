@@ -17,7 +17,7 @@ export async function* toAsyncGenerator<T>(
 
 export async function fromAsyncGenerator<T>(
   input: AsyncGenerator<T>,
-): Promise<Iterable<T>> {
+): Promise<T[]> {
   const result: T[] = [];
   for await (const item of input) {
     result.push(item);

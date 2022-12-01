@@ -1,5 +1,5 @@
 import { readLines } from '../fileHelpers';
-import { largest } from '../asyncHelpers';
+import { fromAsyncGenerator, largest } from '../asyncHelpers';
 
 export async function* elfCalories(
   calorieList: AsyncGenerator<string>,
@@ -23,5 +23,10 @@ export async function solvePartOne() {
 }
 
 export async function solvePartTwo() {
-  return 'TODO';
+  const input = readLines('src/day01/input.txt');
+  const topThreeCalories = (await fromAsyncGenerator(elfCalories(input)))
+    .sort()
+    .reverse()
+    .slice(0, 3);
+  return topThreeCalories.reduce((a, b) => a + b, 0).toString();
 }
