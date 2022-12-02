@@ -75,6 +75,6 @@ describe('day two', () => {
 
   it('can solve part two', async function () {
     const solution = await solvePartTwo();
-    expect(solution).toBe('0');
+    expect(solution).toBe('15442');
   });
 });
