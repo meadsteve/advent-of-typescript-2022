@@ -45,30 +45,29 @@ export function partOneParse(line: string): GoodStrategy {
   };
 }
 
+const beatMap: Record<Move, Record<Move, ResultType>> = {
+  rock: {
+    rock: 'draw',
+    paper: 'lose',
+    scissors: 'win',
+  },
+  paper: {
+    rock: 'win',
+    paper: 'draw',
+    scissors: 'lose',
+  },
+  scissors: {
+    rock: 'lose',
+    paper: 'win',
+    scissors: 'draw',
+  },
+};
+
 export function play({ elfPick, humanPick }: GoodStrategy): GameResult {
-  if (elfPick === humanPick) {
-    return {
-      playedMove: humanPick,
-      outcome: 'draw',
-    };
-  }
-  switch (humanPick) {
-    case 'rock':
-      return {
-        playedMove: humanPick,
-        outcome: elfPick === 'scissors' ? 'win' : 'lose',
-      };
-    case 'paper':
-      return {
-        playedMove: humanPick,
-        outcome: elfPick === 'rock' ? 'win' : 'lose',
-      };
-    case 'scissors':
-      return {
-        playedMove: humanPick,
-        outcome: elfPick === 'paper' ? 'win' : 'lose',
-      };
-  }
+  return {
+    playedMove: humanPick,
+    outcome: beatMap[humanPick][elfPick],
+  };
 }
 
 const pointsMap: Record<Move | ResultType, number> = {
