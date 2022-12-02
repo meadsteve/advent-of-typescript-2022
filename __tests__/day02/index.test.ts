@@ -1,13 +1,28 @@
-import { parse, play, score, solvePartOne } from '../../src/day02';
+import { partOneParse, play, score, solvePartOne } from '../../src/day02';
 
 describe('day two', () => {
-  it('decodes lines properly', async function () {
-    expect(parse('A Y')).toEqual({ elfPick: 'rock', humanPick: 'paper' });
-    expect(parse('B Y')).toEqual({ elfPick: 'paper', humanPick: 'paper' });
-    expect(parse('C Y')).toEqual({ elfPick: 'scissors', humanPick: 'paper' });
-    expect(parse('A X')).toEqual({ elfPick: 'rock', humanPick: 'rock' });
-    expect(parse('A Y')).toEqual({ elfPick: 'rock', humanPick: 'paper' });
-    expect(parse('A Z')).toEqual({ elfPick: 'rock', humanPick: 'scissors' });
+  it('decodes lines properly - For part one', async function () {
+    expect(partOneParse('A Y')).toEqual({
+      elfPick: 'rock',
+      humanPick: 'paper',
+    });
+    expect(partOneParse('B Y')).toEqual({
+      elfPick: 'paper',
+      humanPick: 'paper',
+    });
+    expect(partOneParse('C Y')).toEqual({
+      elfPick: 'scissors',
+      humanPick: 'paper',
+    });
+    expect(partOneParse('A X')).toEqual({ elfPick: 'rock', humanPick: 'rock' });
+    expect(partOneParse('A Y')).toEqual({
+      elfPick: 'rock',
+      humanPick: 'paper',
+    });
+    expect(partOneParse('A Z')).toEqual({
+      elfPick: 'rock',
+      humanPick: 'scissors',
+    });
   });
 
   it('can play a game', async function () {

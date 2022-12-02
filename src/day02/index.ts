@@ -3,7 +3,7 @@ import { aMap, sum } from '../asyncHelpers';
 
 export async function solvePartOne() {
   const lines = readLines('src/day02/input.txt');
-  const moves = aMap(lines, parse);
+  const moves = aMap(lines, partOneParse);
   const results = aMap(moves, play);
   const scores = aMap(results, score);
   const total = await sum(scores);
@@ -37,7 +37,7 @@ const moveMap: Record<string, Move> = {
   Z: 'scissors',
 };
 
-export function parse(line: string): GoodStrategy {
+export function partOneParse(line: string): GoodStrategy {
   const [elfPart, humanPart] = line.split(' ');
   return {
     elfPick: moveMap[elfPart],
