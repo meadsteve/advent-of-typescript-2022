@@ -49,6 +49,14 @@ export async function largest(input: AsyncGenerator<number>): Promise<number> {
   return largest;
 }
 
+export async function sum(input: AsyncGenerator<number>): Promise<number> {
+  let total = 0;
+  for await (const current of input) {
+    total += current;
+  }
+  return total;
+}
+
 export async function largestN(
   input: AsyncGenerator<number>,
   number: number,
