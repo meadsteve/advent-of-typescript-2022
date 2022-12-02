@@ -11,8 +11,12 @@ export async function solvePartOne() {
 }
 
 export async function solvePartTwo() {
-  const input = readLines('src/day02/input.txt');
-  return 'todo';
+  const lines = readLines('src/day02/input.txt');
+  const moves = aMap(lines, partTwoParse);
+  const results = aMap(moves, play);
+  const scores = aMap(results, score);
+  const total = await sum(scores);
+  return total.toString();
 }
 
 type Move = 'rock' | 'paper' | 'scissors';
@@ -26,23 +30,6 @@ interface GoodStrategy {
 interface GameResult {
   playedMove: Move;
   outcome: ResultType;
-}
-
-const moveMap: Record<string, Move> = {
-  A: 'rock',
-  B: 'paper',
-  C: 'scissors',
-  X: 'rock',
-  Y: 'paper',
-  Z: 'scissors',
-};
-
-export function partOneParse(line: string): GoodStrategy {
-  const [elfPart, humanPart] = line.split(' ');
-  return {
-    elfPick: moveMap[elfPart],
-    humanPick: moveMap[humanPart],
-  };
 }
 
 const beatMap: Record<Move, Record<Move, ResultType>> = {
@@ -62,6 +49,51 @@ const beatMap: Record<Move, Record<Move, ResultType>> = {
     scissors: 'draw',
   },
 };
+
+const moveMap: Record<string, Move> = {
+  A: 'rock',
+  B: 'paper',
+  C: 'scissors',
+  X: 'rock',
+  Y: 'paper',
+  Z: 'scissors',
+};
+
+export function partOneParse(line: string): GoodStrategy {
+  const [elfPart, humanPart] = line.split(' ');
+  return {
+    elfPick: moveMap[elfPart],
+    humanPick: moveMap[humanPart],
+  };
+}
+
+function pickCorrectMoveForPartTwo(humanPart: string, elfPick: Move) {
+  let requiredResult: ResultType | null = null;
+  if (humanPart === 'X') {
+    requiredResult = 'win';
+  } else if (humanPart === 'Y') {
+    requiredResult = 'draw';
+  } else {
+    requiredResult = 'lose';
+  }
+  const humanPick = Object.entries(beatMap[elfPick]).find(
+    ([_, result]) => result === requiredResult,
+  );
+  if (!humanPick) {
+    throw new Error('Something went wrong');
+  }
+  return humanPick;
+}
+
+export function partTwoParse(line: string): GoodStrategy {
+  const [elfPart, humanPart] = line.split(' ');
+  const elfPick = moveMap[elfPart];
+  const humanPick = pickCorrectMoveForPartTwo(humanPart, elfPick);
+  return {
+    elfPick,
+    humanPick: humanPick[0] as Move,
+  };
+}
 
 export function play({ elfPick, humanPick }: GoodStrategy): GameResult {
   return {

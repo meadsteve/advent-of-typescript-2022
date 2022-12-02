@@ -1,4 +1,11 @@
-import { partOneParse, play, score, solvePartOne } from '../../src/day02';
+import {
+  partOneParse,
+  partTwoParse,
+  play,
+  score,
+  solvePartOne,
+  solvePartTwo,
+} from '../../src/day02';
 
 describe('day two', () => {
   it('decodes lines properly - For part one', async function () {
@@ -25,6 +32,23 @@ describe('day two', () => {
     });
   });
 
+  it('decodes lines properly - For part two', async function () {
+    expect(partTwoParse('A Y')).toEqual({
+      elfPick: 'rock',
+      humanPick: 'rock',
+    });
+
+    expect(partTwoParse('A X')).toEqual({
+      elfPick: 'rock',
+      humanPick: 'scissors',
+    });
+
+    expect(partTwoParse('A Z')).toEqual({
+      elfPick: 'rock',
+      humanPick: 'paper',
+    });
+  });
+
   it('can play a game', async function () {
     expect(play({ elfPick: 'rock', humanPick: 'paper' })).toEqual({
       playedMove: 'paper',
@@ -47,5 +71,10 @@ describe('day two', () => {
   it('can solve part one', async function () {
     const solution = await solvePartOne();
     expect(solution).toBe('15422');
+  });
+
+  it('can solve part two', async function () {
+    const solution = await solvePartTwo();
+    expect(solution).toBe('0');
   });
 });
