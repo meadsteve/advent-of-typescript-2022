@@ -7,6 +7,18 @@ export async function* aMap<TIn, TOut>(
   }
 }
 
+export async function aReduce<TIn, TOut>(
+  input: AsyncGenerator<TIn>,
+  fn: (acc: TOut, n: TIn) => TOut,
+  initial: TOut | undefined = undefined,
+): Promise<TOut> {
+  let acc = initial || (await input.next()).value;
+  for await (const x of input) {
+    acc = fn(acc, x);
+  }
+  return acc;
+}
+
 export async function* toAsyncGenerator<T>(
   input: Iterable<T>,
 ): AsyncGenerator<T> {
@@ -39,22 +51,26 @@ export async function* slidingWindow<T>(
   }
 }
 
-export async function largest(input: AsyncGenerator<number>): Promise<number> {
-  let largest = (await input.next()).value;
+export async function* groupsOfN<T>(
+  input: AsyncGenerator<T>,
+  groupSize: number,
+): AsyncGenerator<T[]> {
+  let group: T[] = [];
   for await (const current of input) {
-    if (current > largest) {
-      largest = current;
+    group.push(current);
+    if (group.length === groupSize) {
+      yield group;
+      group = [];
     }
   }
-  return largest;
+}
+
+export async function largest(input: AsyncGenerator<number>): Promise<number> {
+  return aReduce(input, (a, b) => Math.max(a, b));
 }
 
 export async function sum(input: AsyncGenerator<number>): Promise<number> {
-  let total = 0;
-  for await (const current of input) {
-    total += current;
-  }
-  return total;
+  return aReduce(input, (total, n) => total + n);
 }
 
 export async function largestN(
@@ -79,18 +95,4 @@ export async function largestN(
     }
   }
   return largest;
-}
-
-export async function* groupsOfN<T>(
-  input: AsyncGenerator<T>,
-  groupSize: number,
-): AsyncGenerator<T[]> {
-  let group: T[] = [];
-  for await (const current of input) {
-    group.push(current);
-    if (group.length === groupSize) {
-      yield group;
-      group = [];
-    }
-  }
 }
