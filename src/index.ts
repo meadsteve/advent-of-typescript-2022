@@ -1,6 +1,8 @@
 import { program, InvalidArgumentError } from 'commander';
 import figlet from 'figlet';
 import * as day01 from './day01/index';
+import * as day02 from './day02/index';
+import * as day03 from './day03/index';
 
 program.description('Ho ho ho');
 program.version('1');
@@ -28,6 +30,21 @@ interface Day {
   solvePartTwo: () => Promise<string>;
 }
 
+async function runCorrectDayAndPart(
+  day: number,
+  part: number,
+): Promise<string> {
+  switch (day) {
+    case 1:
+      return runPart(day01, part);
+    case 2:
+      return runPart(day02, part);
+    case 3:
+      return runPart(day03, part);
+  }
+  return Promise.resolve(`TODO: implement day ${day}`);
+}
+
 function runPart(
   { solvePartOne, solvePartTwo }: Day,
   part: number,
@@ -47,12 +64,10 @@ program.parse();
 const options = program.opts();
 
 console.log(figlet.textSync('Advent of Code 2022'));
+
 if (options.day && options.part) {
   console.log(`Solving day ${options.day} part ${options.part}`);
-  switch (options.day) {
-    case 1:
-      runPart(day01, options.part).then((answer) =>
-        console.log(`The answer is: ${answer}`),
-      );
-  }
+  runCorrectDayAndPart(options.day, options.part).then((result) => {
+    console.log(result);
+  });
 }
