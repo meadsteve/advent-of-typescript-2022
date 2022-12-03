@@ -1,5 +1,6 @@
 import {
   fromAsyncGenerator,
+  groupsOfN,
   largest,
   largestN,
   slidingWindow,
@@ -14,6 +15,16 @@ describe('async helpers', () => {
       [1, 2, 3],
       [2, 3, 4],
       [3, 4, 5],
+    ]);
+  });
+
+  it('can group items into lists of N', async function () {
+    const input = toAsyncGenerator([1, 2, 3, 4, 5, 6]);
+    const result = await fromAsyncGenerator(groupsOfN(input, 2));
+    expect(result).toEqual([
+      [1, 2],
+      [3, 4],
+      [5, 6],
     ]);
   });
 

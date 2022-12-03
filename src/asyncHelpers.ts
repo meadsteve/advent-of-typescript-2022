@@ -80,3 +80,17 @@ export async function largestN(
   }
   return largest;
 }
+
+export async function* groupsOfN<T>(
+  input: AsyncGenerator<T>,
+  groupSize: number,
+): AsyncGenerator<T[]> {
+  let group: T[] = [];
+  for await (const current of input) {
+    group.push(current);
+    if (group.length === groupSize) {
+      yield group;
+      group = [];
+    }
+  }
+}

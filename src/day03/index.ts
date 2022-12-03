@@ -1,17 +1,17 @@
 import { readLines } from '../fileHelpers';
-import { aMap, sum } from '../asyncHelpers';
+import { aMap, groupsOfN, sum } from '../asyncHelpers';
 
 type ListOfItems = string;
 type Item = string;
 
 export async function solvePartOne() {
   const lines = readLines('src/day03/input.txt');
-  return (await totalPriority(lines)).toString();
+  return (await totalPriorityForPartOne(lines)).toString();
 }
 
 export async function solvePartTwo() {
   const lines = readLines('src/day03/input.txt');
-  return 'TODO';
+  return (await totalPriorityForPartTwo(lines)).toString();
 }
 
 export function splitPack(input: ListOfItems): [ListOfItems, ListOfItems] {
@@ -39,11 +39,20 @@ export function getPriority(input: Item): number {
   return charCode - 38;
 }
 
-export async function totalPriority(
+export async function totalPriorityForPartOne(
   bags: AsyncGenerator<ListOfItems>,
 ): Promise<number> {
   const compartmentPairs = aMap(bags, splitPack);
   const commonItems = aMap(compartmentPairs, findCommonItem);
+  const priorities = aMap(commonItems, getPriority);
+  return sum(priorities);
+}
+
+export async function totalPriorityForPartTwo(
+  bags: AsyncGenerator<ListOfItems>,
+): Promise<number> {
+  const groups = groupsOfN(bags, 3);
+  const commonItems = aMap(groups, findCommonItem);
   const priorities = aMap(commonItems, getPriority);
   return sum(priorities);
 }

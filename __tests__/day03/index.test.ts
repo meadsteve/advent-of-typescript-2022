@@ -3,8 +3,10 @@ import {
   findCommonItem,
   getPriority,
   solvePartOne,
+  solvePartTwo,
   splitPack,
-  totalPriority,
+  totalPriorityForPartOne,
+  totalPriorityForPartTwo,
 } from '../../src/day03';
 
 describe('day 03', () => {
@@ -26,7 +28,7 @@ describe('day 03', () => {
     expect(getPriority('t')).toEqual(20);
   });
 
-  it('get the total priority for a set of bags', async function () {
+  it('get the total priority for a set of bags - according to part one', async function () {
     const bags = toAsyncGenerator([
       'vJrwpWtwJgWrhcsFMMfFFhFp',
       'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
@@ -35,11 +37,28 @@ describe('day 03', () => {
       'ttgJtRGJQctTZtZT',
       'CrZsJsPPZsGzwwsLwLmpwMDw',
     ]);
-    expect(await totalPriority(bags)).toEqual(157);
+    expect(await totalPriorityForPartOne(bags)).toEqual(157);
+  });
+
+  it('get the total priority for a set of bags - according to part two', async function () {
+    const bags = toAsyncGenerator([
+      'vJrwpWtwJgWrhcsFMMfFFhFp',
+      'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
+      'PmmdzqPrVvPwwTWBwg',
+      'wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn',
+      'ttgJtRGJQctTZtZT',
+      'CrZsJsPPZsGzwwsLwLmpwMDw',
+    ]);
+    expect(await totalPriorityForPartTwo(bags)).toEqual(70);
   });
 
   it('can solve part one', async function () {
     const solution = await solvePartOne();
     expect(solution).toBe('8105');
+  });
+
+  it('can solve part two', async function () {
+    const solution = await solvePartTwo();
+    expect(solution).toBe('2363');
   });
 });
