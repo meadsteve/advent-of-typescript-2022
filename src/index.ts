@@ -1,8 +1,5 @@
 import { program, InvalidArgumentError } from 'commander';
 import figlet from 'figlet';
-import * as day01 from './day01/index';
-import * as day02 from './day02/index';
-import * as day03 from './day03/index';
 
 program.description('Ho ho ho');
 program.version('1');
@@ -34,15 +31,19 @@ async function runCorrectDayAndPart(
   day: number,
   part: number,
 ): Promise<string> {
-  switch (day) {
-    case 1:
-      return runPart(day01, part);
-    case 2:
-      return runPart(day02, part);
-    case 3:
-      return runPart(day03, part);
+  const moduleName = day < 10 ? `day0${day}` : `day${day}`;
+  const modulePath = `./${moduleName}/index`;
+  let module: Day | undefined = undefined;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    module = require(modulePath) as Day;
+  } catch (e) {
+    console.log(`Couldn't load module: ${modulePath}`);
   }
-  return Promise.resolve(`TODO: implement day ${day}`);
+  if (!module) {
+    return Promise.resolve(`TODO: implement day ${day}`);
+  }
+  return runPart(module, part);
 }
 
 function runPart(
@@ -70,4 +71,6 @@ if (options.day && options.part) {
   runCorrectDayAndPart(options.day, options.part).then((result) => {
     console.log(result);
   });
+} else {
+  console.log('You must provide a day AND a part');
 }
