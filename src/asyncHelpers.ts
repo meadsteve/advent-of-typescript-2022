@@ -1,3 +1,8 @@
+// Stolen from https://stackoverflow.com/questions/52489261/typescript-can-i-define-an-n-length-tuple-type
+export type Tuple<TItem, TLength extends number> = [TItem, ...TItem[]] & {
+  length: TLength;
+};
+
 export async function* aMap<TIn, TOut>(
   input: AsyncGenerator<TIn>,
   fn: (x: TIn) => TOut,
@@ -37,29 +42,29 @@ export async function fromAsyncGenerator<T>(
   return result;
 }
 
-export async function* slidingWindow<T>(
+export async function* slidingWindow<T, TLength extends number>(
   input: AsyncGenerator<T>,
-  windowSize: number,
-): AsyncGenerator<T[]> {
+  windowSize: TLength,
+): AsyncGenerator<Tuple<T, TLength>> {
   const window: T[] = [];
   for await (const current of input) {
     window.push(current);
     if (window.length === windowSize) {
-      yield [...window];
+      yield [...window] as Tuple<T, TLength>;
       window.shift();
     }
   }
 }
 
-export async function* groupsOfN<T>(
+export async function* groupsOfN<T, TLength extends number>(
   input: AsyncGenerator<T>,
-  groupSize: number,
-): AsyncGenerator<T[]> {
+  groupSize: TLength,
+): AsyncGenerator<Tuple<T, TLength>> {
   let group: T[] = [];
   for await (const current of input) {
     group.push(current);
     if (group.length === groupSize) {
-      yield group;
+      yield group as Tuple<T, TLength>;
       group = [];
     }
   }
@@ -73,17 +78,17 @@ export async function sum(input: AsyncGenerator<number>): Promise<number> {
   return aReduce(input, (total, n) => total + n);
 }
 
-export async function largestN(
+export async function largestN<TLength extends number>(
   input: AsyncGenerator<number>,
-  number: number,
-): Promise<number[]> {
-  const largest: number[] = [];
+  number: TLength,
+): Promise<Tuple<number, TLength>> {
+  const largest = new Array<number>(number) as Tuple<number, TLength>;
   for (let i = 0; i < number; i++) {
     const next = await input.next();
     if (next.done) {
       return largest;
     }
-    largest.push(next.value);
+    largest[i] = next.value;
   }
   for await (let current of input) {
     for (let i = 0; i < number; i++) {
