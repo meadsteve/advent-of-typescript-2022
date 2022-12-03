@@ -39,20 +39,24 @@ export function getPriority(input: Item): number {
   return charCode - 38;
 }
 
+async function totalPriority(
+  groups: AsyncGenerator<ListOfItems[]>,
+): Promise<number> {
+  const commonItems = aMap(groups, findCommonItem);
+  const priorities = aMap(commonItems, getPriority);
+  return sum(priorities);
+}
+
 export async function totalPriorityForPartOne(
   bags: AsyncGenerator<ListOfItems>,
 ): Promise<number> {
   const compartmentPairs = aMap(bags, splitPack);
-  const commonItems = aMap(compartmentPairs, findCommonItem);
-  const priorities = aMap(commonItems, getPriority);
-  return sum(priorities);
+  return totalPriority(compartmentPairs);
 }
 
 export async function totalPriorityForPartTwo(
   bags: AsyncGenerator<ListOfItems>,
 ): Promise<number> {
   const groups = groupsOfN(bags, 3);
-  const commonItems = aMap(groups, findCommonItem);
-  const priorities = aMap(commonItems, getPriority);
-  return sum(priorities);
+  return totalPriority(groups);
 }
