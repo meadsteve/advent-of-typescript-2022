@@ -74,3 +74,4 @@ if (options.day && options.part) {
 } else {
   console.log('You must provide a day AND a part');
 }
+export { Singleton } from './singleton';

@@ -1,5 +1,6 @@
 import { readLines } from '../fileHelpers';
 import { aMap, sum } from '../asyncHelpers';
+import { Singleton } from '../singleton';
 
 export async function solvePartOne() {
   const lines = readLines('src/day02/input.txt');
@@ -19,31 +20,25 @@ export async function solvePartTwo() {
   return total.toString();
 }
 
-export class Rock {
+export class Rock extends Singleton {
   name = 'rock';
   points = 1;
   beatenBy = Paper;
   beats = Scissors;
-
-  constructor() {}
 }
 
-export class Paper {
+export class Paper extends Singleton {
   name = 'paper';
   points = 2;
   beatenBy = Scissors;
   beats = Rock;
-
-  constructor() {}
 }
 
-export class Scissors {
+export class Scissors extends Singleton {
   name = 'scissors';
   points = 3;
   beatenBy = Rock;
   beats = Paper;
-
-  constructor() {}
 }
 
 type Move = Rock | Paper | Scissors;

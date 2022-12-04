@@ -48,6 +48,14 @@ describe('day two', () => {
     expect(score({ playedMove: new Paper(), outcome: 'win' })).toEqual(8);
   });
 
+  it('amuses me if the moves are singletons', async function () {
+    expect(new Rock()).toBe(new Rock());
+    expect(new Paper()).toBe(new Paper());
+    expect(new Scissors()).toBe(new Scissors());
+    expect(new Rock()).not.toBe(new Paper());
+    expect(new Rock()).not.toBe(new Scissors());
+  });
+
   it('can solve part one', async function () {
     const solution = await solvePartOne();
     expect(solution).toBe('15422');
