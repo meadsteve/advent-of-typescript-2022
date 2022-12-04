@@ -37,6 +37,6 @@ describe('day 4', () => {
 
   it('can solve part 1', async function () {
     const result = await solvePartOne();
-    expect(result).toEqual('0');
+    expect(result).toEqual('498');
   });
 });
