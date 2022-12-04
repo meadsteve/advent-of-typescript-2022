@@ -9,14 +9,24 @@ export async function solvePartOne() {
 
 export async function solvePartTwo() {
   const lines = readLines('src/day04/input.txt');
-  return 'TODO';
+  const partialOverlaps = await countPartiallyOverlappedPairs(lines);
+  return partialOverlaps.toString();
 }
 
 export class Range {
   constructor(private lower: number, private upper: number) {}
 
-  contains(smallerRange: Range) {
-    return this.lower <= smallerRange.lower && this.upper >= smallerRange.upper;
+  contains(other: Range): boolean {
+    return this.lower <= other.lower && this.upper >= other.upper;
+  }
+
+  overlaps(other: Range): boolean {
+    return (
+      (other.lower >= this.lower && other.lower <= this.upper) ||
+      (other.upper >= this.lower && other.upper <= this.upper) ||
+      this.contains(other) ||
+      other.contains(this)
+    );
   }
 }
 
@@ -39,4 +49,12 @@ export async function countFullyOverlappedPairs(
     ([a, b]) => a.contains(b) || b.contains(a),
   );
   return await count(fullyOverlappedPairs);
+}
+
+export async function countPartiallyOverlappedPairs(
+  input: AsyncGenerator<string>,
+): Promise<number> {
+  const ranges = aMap(input, parseLine);
+  const partialOverlaps = aFilter(ranges, ([a, b]) => a.overlaps(b));
+  return await count(partialOverlaps);
 }
