@@ -19,7 +19,28 @@ export async function solvePartTwo() {
   return total.toString();
 }
 
-type Move = 'rock' | 'paper' | 'scissors';
+class Rock {
+  name = 'rock';
+  points = 1;
+  beatenBy = Paper;
+  beats = Scissors;
+}
+
+class Paper {
+  name = 'paper';
+  points = 2;
+  beatenBy = Scissors;
+  beats = Rock;
+}
+
+class Scissors {
+  name = 'scissors';
+  points = 3;
+  beatenBy = Rock;
+  beats = Paper;
+}
+
+type Move = Rock | Paper | Scissors;
 type ResultType = 'win' | 'lose' | 'draw';
 
 interface GoodStrategy {
@@ -32,31 +53,13 @@ interface GameResult {
   outcome: ResultType;
 }
 
-const beatMap: Record<Move, Record<Move, ResultType>> = {
-  rock: {
-    rock: 'draw',
-    paper: 'lose',
-    scissors: 'win',
-  },
-  paper: {
-    rock: 'win',
-    paper: 'draw',
-    scissors: 'lose',
-  },
-  scissors: {
-    rock: 'lose',
-    paper: 'win',
-    scissors: 'draw',
-  },
-};
-
 const moveMap: Record<string, Move> = {
-  A: 'rock',
-  B: 'paper',
-  C: 'scissors',
-  X: 'rock',
-  Y: 'paper',
-  Z: 'scissors',
+  A: new Rock(),
+  B: new Paper(),
+  C: new Scissors(),
+  X: new Rock(),
+  Y: new Paper(),
+  Z: new Scissors(),
 };
 
 export function partOneParse(line: string): GoodStrategy {
@@ -67,22 +70,14 @@ export function partOneParse(line: string): GoodStrategy {
   };
 }
 
-function pickCorrectMoveForPartTwo(humanPart: string, elfPick: Move) {
-  let requiredResult: ResultType | null = null;
+function pickCorrectMoveForPartTwo(humanPart: string, elfPick: Move): Move {
   if (humanPart === 'X') {
-    requiredResult = 'win';
+    return new elfPick.beats();
   } else if (humanPart === 'Y') {
-    requiredResult = 'draw';
+    return elfPick;
   } else {
-    requiredResult = 'lose';
+    return new elfPick.beatenBy();
   }
-  const humanPick = Object.entries(beatMap[elfPick]).find(
-    ([_, result]) => result === requiredResult,
-  );
-  if (!humanPick) {
-    throw new Error('Something went wrong');
-  }
-  return humanPick;
 }
 
 export function partTwoParse(line: string): GoodStrategy {
@@ -91,26 +86,33 @@ export function partTwoParse(line: string): GoodStrategy {
   const humanPick = pickCorrectMoveForPartTwo(humanPart, elfPick);
   return {
     elfPick,
-    humanPick: humanPick[0] as Move,
+    humanPick,
   };
+}
+
+function result(humanPick: Move, elfPick: Move): ResultType {
+  if (humanPick.constructor.name === elfPick.constructor.name) {
+    return 'draw';
+  } else if (humanPick instanceof elfPick.beats) {
+    return 'lose';
+  } else {
+    return 'win';
+  }
 }
 
 export function play({ elfPick, humanPick }: GoodStrategy): GameResult {
   return {
     playedMove: humanPick,
-    outcome: beatMap[humanPick][elfPick],
+    outcome: result(humanPick, elfPick),
   };
 }
 
-const pointsMap: Record<Move | ResultType, number> = {
+const pointsMap: Record<ResultType, number> = {
   lose: 0,
   draw: 3,
   win: 6,
-  rock: 1,
-  paper: 2,
-  scissors: 3,
 };
 
 export function score({ playedMove, outcome }: GameResult): number {
-  return pointsMap[playedMove] + pointsMap[outcome];
+  return playedMove.points + pointsMap[outcome];
 }
