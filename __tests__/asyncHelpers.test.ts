@@ -1,4 +1,6 @@
 import {
+  aFilter,
+  count,
   fromAsyncGenerator,
   groupsOfN,
   largest,
@@ -26,6 +28,18 @@ describe('async helpers', () => {
       [3, 4],
       [5, 6],
     ]);
+  });
+
+  it('can count a generators items', async function () {
+    const input = toAsyncGenerator(['one', 'two', 'three']);
+    const result = await count(input);
+    expect(result).toEqual(3);
+  });
+
+  it('can filter an async generator', async function () {
+    const input = toAsyncGenerator([1, 2, 3, 4, 5, 6]);
+    const result = await fromAsyncGenerator(aFilter(input, (n) => n % 2 === 0));
+    expect(result).toEqual([2, 4, 6]);
   });
 
   describe('finding large numbers', () => {

@@ -12,12 +12,23 @@ export async function* aMap<TIn, TOut>(
   }
 }
 
+export async function* aFilter<T>(
+  input: AsyncGenerator<T>,
+  fn: (x: T) => boolean,
+): AsyncGenerator<T> {
+  for await (const x of input) {
+    if (fn(x)) {
+      yield x;
+    }
+  }
+}
+
 export async function aReduce<TIn, TOut>(
   input: AsyncGenerator<TIn>,
   fn: (acc: TOut, n: TIn) => TOut,
   initial: TOut | undefined = undefined,
 ): Promise<TOut> {
-  let acc = initial || (await input.next()).value;
+  let acc = initial !== undefined ? initial : (await input.next()).value;
   for await (const x of input) {
     acc = fn(acc, x);
   }
@@ -76,6 +87,10 @@ export async function largest(input: AsyncGenerator<number>): Promise<number> {
 
 export async function sum(input: AsyncGenerator<number>): Promise<number> {
   return aReduce(input, (total, n) => total + n);
+}
+
+export async function count(input: AsyncGenerator<any>): Promise<number> {
+  return aReduce(input, (total, _) => total + 1, 0);
 }
 
 export async function largestN<TLength extends number>(
