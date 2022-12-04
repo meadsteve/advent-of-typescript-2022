@@ -19,25 +19,31 @@ export async function solvePartTwo() {
   return total.toString();
 }
 
-class Rock {
+export class Rock {
   name = 'rock';
   points = 1;
   beatenBy = Paper;
   beats = Scissors;
+
+  constructor() {}
 }
 
-class Paper {
+export class Paper {
   name = 'paper';
   points = 2;
   beatenBy = Scissors;
   beats = Rock;
+
+  constructor() {}
 }
 
-class Scissors {
+export class Scissors {
   name = 'scissors';
   points = 3;
   beatenBy = Rock;
   beats = Paper;
+
+  constructor() {}
 }
 
 type Move = Rock | Paper | Scissors;

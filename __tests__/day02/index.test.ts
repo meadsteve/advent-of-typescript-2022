@@ -1,72 +1,52 @@
 import {
+  Paper,
   partOneParse,
   partTwoParse,
   play,
+  Rock,
+  Scissors,
   score,
   solvePartOne,
   solvePartTwo,
 } from '../../src/day02';
 
 describe('day two', () => {
-  // it('decodes lines properly - For part one', async function () {
-  //   expect(partOneParse('A Y')).toEqual({
-  //     elfPick: 'rock',
-  //     humanPick: 'paper',
-  //   });
-  //   expect(partOneParse('B Y')).toEqual({
-  //     elfPick: 'paper',
-  //     humanPick: 'paper',
-  //   });
-  //   expect(partOneParse('C Y')).toEqual({
-  //     elfPick: 'scissors',
-  //     humanPick: 'paper',
-  //   });
-  //   expect(partOneParse('A X')).toEqual({ elfPick: 'rock', humanPick: 'rock' });
-  //   expect(partOneParse('A Y')).toEqual({
-  //     elfPick: 'rock',
-  //     humanPick: 'paper',
-  //   });
-  //   expect(partOneParse('A Z')).toEqual({
-  //     elfPick: 'rock',
-  //     humanPick: 'scissors',
-  //   });
-  // });
-  //
-  // it('decodes lines properly - For part two', async function () {
-  //   expect(partTwoParse('A Y')).toEqual({
-  //     elfPick: 'rock',
-  //     humanPick: 'rock',
-  //   });
-  //
-  //   expect(partTwoParse('A X')).toEqual({
-  //     elfPick: 'rock',
-  //     humanPick: 'scissors',
-  //   });
-  //
-  //   expect(partTwoParse('A Z')).toEqual({
-  //     elfPick: 'rock',
-  //     humanPick: 'paper',
-  //   });
-  // });
-  //
-  // it('can play a game', async function () {
-  //   expect(play({ elfPick: 'rock', humanPick: 'paper' })).toEqual({
-  //     playedMove: 'paper',
-  //     outcome: 'win',
-  //   });
-  //   expect(play({ elfPick: 'paper', humanPick: 'paper' })).toEqual({
-  //     playedMove: 'paper',
-  //     outcome: 'draw',
-  //   });
-  //   expect(play({ elfPick: 'scissors', humanPick: 'paper' })).toEqual({
-  //     playedMove: 'paper',
-  //     outcome: 'lose',
-  //   });
-  // });
-  //
-  // it('can score a game result', async function () {
-  //   expect(score({ playedMove: 'paper', outcome: 'win' })).toEqual(8);
-  // });
+  it('decodes lines properly - For part one', async function () {
+    expect(partOneParse('A Y')).toEqual(
+      expect.objectContaining({
+        elfPick: expect.any(Rock),
+        humanPick: expect.any(Paper),
+      }),
+    );
+    expect(partOneParse('C Y')).toEqual(
+      expect.objectContaining({
+        elfPick: expect.any(Scissors),
+        humanPick: expect.any(Paper),
+      }),
+    );
+  });
+
+  it('decodes lines properly - For part two', async function () {
+    expect(partTwoParse('A Y')).toEqual(
+      expect.objectContaining({
+        elfPick: expect.any(Rock),
+        humanPick: expect.any(Rock),
+      }),
+    );
+  });
+
+  it('can play a game', async function () {
+    expect(play({ elfPick: new Rock(), humanPick: new Paper() })).toEqual(
+      expect.objectContaining({
+        playedMove: expect.any(Paper),
+        outcome: 'win',
+      }),
+    );
+  });
+
+  it('can score a game result', async function () {
+    expect(score({ playedMove: new Paper(), outcome: 'win' })).toEqual(8);
+  });
 
   it('can solve part one', async function () {
     const solution = await solvePartOne();
