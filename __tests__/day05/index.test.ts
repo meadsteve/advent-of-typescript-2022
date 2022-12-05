@@ -1,50 +1,11 @@
-class Stack {
-  private items: string[] = [];
-
-  push(a: string) {
-    this.items.push(a);
-  }
-
-  get prettyView(): string {
-    return this.items
-      .map((i) => `[${i}]`)
-      .reverse()
-      .join('\n');
-  }
-
-  pop(number: number): string[] {
-    const popped = [];
-    for (let i = 0; i < number; i++) {
-      const item = this.items.pop();
-      if (!item) {
-        throw new Error("Can't pop an empty stack");
-      }
-      popped.push(item);
-    }
-    return popped;
-  }
-}
-
-type Move = { amount: number; from: number; to: number };
-
-class StackSet {
-  private stacks: Stack[] = [];
-
-  createStack(items: string[]) {
-    const newStack = new Stack();
-    items.reverse().forEach((i) => newStack.push(i));
-    this.stacks.push(newStack);
-  }
-
-  get(pos: number): Stack {
-    return this.stacks[pos - 1];
-  }
-
-  makeMove({ amount, from, to }: Move) {
-    const items = this.get(from).pop(amount);
-    items.forEach((i) => this.get(to).push(i));
-  }
-}
+import {
+  parseMoveInstructionLine,
+  parseTowerDescription,
+  parseTowerDescriptionLine,
+  solvePartOne,
+  Stack,
+  StackSet,
+} from '../../src/day05';
 
 describe('day 5', () => {
   it('can move items onto a stack', async function () {
@@ -90,5 +51,35 @@ describe('day 5', () => {
 
     expect(towers.get(1).prettyView).toEqual('[D]\n[N]\n[Z]');
     expect(towers.get(2).prettyView).toEqual('[C]\n[M]');
+  });
+
+  it('can parse move instruction lines', async function () {
+    const line = 'move 1 from 2 to 1';
+    expect(parseMoveInstructionLine(line)).toEqual({
+      amount: 1,
+      from: 2,
+      to: 1,
+    });
+  });
+
+  it('can parse a tower description lines', async function () {
+    expect(parseTowerDescriptionLine('    [D]    ')).toEqual([null, 'D', null]);
+    expect(parseTowerDescriptionLine('[Z] [M] [P]')).toEqual(['Z', 'M', 'P']);
+  });
+
+  it('can parse the tower description', async function () {
+    const lines = ['    [D]    ', '[N] [C]    ', '[Z] [M] [P]', ' 1   2   3 '];
+
+    const expectedTowers = new StackSet();
+    expectedTowers.createStack(['N', 'Z']);
+    expectedTowers.createStack(['D', 'C', 'M']);
+    expectedTowers.createStack(['P']);
+
+    expect(parseTowerDescription(lines)).toEqual(expectedTowers);
+  });
+
+  it('can solve part 1', async function () {
+    const result = await solvePartOne();
+    expect(result).toEqual('0');
   });
 });

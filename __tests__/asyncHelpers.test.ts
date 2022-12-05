@@ -6,6 +6,7 @@ import {
   largest,
   largestN,
   slidingWindow,
+  takeUntil,
   toAsyncGenerator,
 } from '../src/asyncHelpers';
 
@@ -40,6 +41,13 @@ describe('async helpers', () => {
     const input = toAsyncGenerator([1, 2, 3, 4, 5, 6]);
     const result = await fromAsyncGenerator(aFilter(input, (n) => n % 2 === 0));
     expect(result).toEqual([2, 4, 6]);
+  });
+
+  it('can take all items until a function returns true', async function () {
+    const input = toAsyncGenerator(['one', 'two', 'three', 'four', 'five']);
+    const result = await takeUntil(input, (l) => l === 'three');
+    expect(result).toEqual(['one', 'two']);
+    expect(await input.next()).toEqual({ value: 'four', done: false });
   });
 
   describe('finding large numbers', () => {

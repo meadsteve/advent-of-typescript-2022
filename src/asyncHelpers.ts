@@ -116,3 +116,17 @@ export async function largestN<TLength extends number>(
   }
   return largest;
 }
+
+export async function takeUntil<T>(
+  input: AsyncGenerator<T>,
+  fn: (l: T) => boolean,
+): Promise<T[]> {
+  const output: T[] = [];
+  for await (const item of input) {
+    if (fn(item)) {
+      return output;
+    }
+    output.push(item);
+  }
+  throw new Error('End criteria not met');
+}
