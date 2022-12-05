@@ -3,6 +3,7 @@ import {
   parseTowerDescription,
   parseTowerDescriptionLine,
   solvePartOne,
+  solvePartTwo,
   Stack,
   StackSet,
 } from '../../src/day05';
@@ -41,16 +42,27 @@ describe('day 5', () => {
     expect(towers.get(3).prettyView).toEqual('[P]');
   });
 
-  it('can apply moves to a set of stacks', async function () {
+  it('can apply moves to a set of stacks - CrateMover9000', async function () {
     const towers = new StackSet();
     towers.createStack(['N', 'Z']);
     towers.createStack(['D', 'C', 'M']);
     towers.createStack(['P']);
 
-    towers.makeMove({ amount: 1, from: 2, to: 1 });
+    towers.makeMoveWithCrateMover9000({ amount: 1, from: 2, to: 1 });
 
     expect(towers.get(1).prettyView).toEqual('[D]\n[N]\n[Z]');
     expect(towers.get(2).prettyView).toEqual('[C]\n[M]');
+  });
+
+  it('can apply moves to a set of stacks - CrateMover9001', async function () {
+    const towers = new StackSet();
+    towers.createStack(['D', 'N', 'Z']);
+    towers.createStack(['C', 'M']);
+    towers.createStack(['P']);
+
+    towers.makeMoveWithCrateMover9001({ amount: 3, from: 1, to: 3 });
+
+    expect(towers.get(3).prettyView).toEqual('[D]\n[N]\n[Z]\n[P]');
   });
 
   it('can parse move instruction lines', async function () {
@@ -80,6 +92,11 @@ describe('day 5', () => {
 
   it('can solve part 1', async function () {
     const result = await solvePartOne();
-    expect(result).toEqual('0');
+    expect(result).toEqual('SHMSDGZVC');
+  });
+
+  it('can solve part 2', async function () {
+    const result = await solvePartTwo();
+    expect(result).toEqual('SHMSDGZVC');
   });
 });

@@ -1,20 +1,28 @@
 import { readLines } from '../fileHelpers';
 import { aMap, takeUntil } from '../asyncHelpers';
 
-export async function solvePartOne() {
+async function parseTowersAndMoves() {
   const lines = readLines('src/day05/input.txt');
   const header = await takeUntil(lines, (line) => line === '');
   const towers = parseTowerDescription(header);
   const moves = aMap(lines, parseMoveInstructionLine);
+  return { towers, moves };
+}
+
+export async function solvePartOne() {
+  const { towers, moves } = await parseTowersAndMoves();
   for await (const move of moves) {
-    towers.makeMove(move);
+    towers.makeMoveWithCrateMover9000(move);
   }
   return towers.tops;
 }
 
 export async function solvePartTwo() {
-  const lines = readLines('src/day05/input.txt');
-  return 'todo';
+  const { towers, moves } = await parseTowersAndMoves();
+  for await (const move of moves) {
+    towers.makeMoveWithCrateMover9001(move);
+  }
+  return towers.tops;
 }
 
 export class Stack {
@@ -72,8 +80,16 @@ export class StackSet {
     return this.stacks[pos - 1];
   }
 
-  makeMove({ amount, from, to }: Move) {
+  makeMoveWithCrateMover9000({ amount, from, to }: Move) {
     const items = this.get(from).pop(amount);
+    for (const item of items) {
+      this.get(to).push(item);
+    }
+  }
+
+  makeMoveWithCrateMover9001({ amount, from, to }: Move) {
+    const items = this.get(from).pop(amount);
+    items.reverse();
     for (const item of items) {
       this.get(to).push(item);
     }
