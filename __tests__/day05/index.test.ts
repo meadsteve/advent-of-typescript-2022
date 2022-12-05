@@ -97,6 +97,6 @@ describe('day 5', () => {
 
   it('can solve part 2', async function () {
     const result = await solvePartTwo();
-    expect(result).toEqual('SHMSDGZVC');
+    expect(result).toEqual('VRZGHDFBQ');
   });
 });
