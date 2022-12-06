@@ -1,37 +1,30 @@
-import { enumerate, slidingWindow, toAsyncGenerator } from '../asyncHelpers';
-import { readLines } from '../fileHelpers';
+import { readSingleLine } from '../fileHelpers';
 
 export async function solvePartOne() {
-  const line: string = (await (await readLines('src/day06/input.txt')).next())
-    .value;
-  const markerPosition = await findStartOfPacketMarkerPosition(line);
+  const line = await readSingleLine('src/day06/input.txt');
+  const markerPosition = findStartOfPacketMarkerPosition(line);
   return markerPosition.toString();
 }
 
 export async function solvePartTwo() {
-  const line: string = (await (await readLines('src/day06/input.txt')).next())
-    .value;
-  const markerPosition = await findStartOfMessageMarkerPosition(line);
+  const line = await readSingleLine('src/day06/input.txt');
+  const markerPosition = findStartOfMessageMarkerPosition(line);
   return markerPosition.toString();
 }
 
-export async function findStartOfPacketMarkerPosition(input: string) {
-  const letterWindow = slidingWindow(toAsyncGenerator(input.split('')), 4);
-  for await (const [position, letters] of enumerate(letterWindow)) {
-    const uniqueLetters = new Set(letters);
-    if (uniqueLetters.size === 4) {
-      return position + 4;
-    }
-  }
-  throw new Error("Couldn't find marker position");
+export function findStartOfPacketMarkerPosition(input: string) {
+  return findMarkerOfLength(input, 4);
 }
 
-export async function findStartOfMessageMarkerPosition(input: string) {
-  const letterWindow = slidingWindow(toAsyncGenerator(input.split('')), 14);
-  for await (const [position, letters] of enumerate(letterWindow)) {
-    const uniqueLetters = new Set(letters);
-    if (uniqueLetters.size === 14) {
-      return position + 14;
+export function findStartOfMessageMarkerPosition(input: string) {
+  return findMarkerOfLength(input, 14);
+}
+
+function findMarkerOfLength(input: string, size: number) {
+  for (let i = 0; i < input.length - size; i++) {
+    const uniqueLetters = new Set(input.slice(i, i + size));
+    if (uniqueLetters.size === size) {
+      return i + size;
     }
   }
   throw new Error("Couldn't find marker position");

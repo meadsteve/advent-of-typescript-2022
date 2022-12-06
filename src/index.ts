@@ -75,3 +75,4 @@ if (options.day && options.part) {
   console.log('You must provide a day AND a part');
 }
 export { Singleton } from './singleton';
+export { readSingleLine } from './fileHelpers';

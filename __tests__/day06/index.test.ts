@@ -8,19 +8,19 @@ import {
 describe('day 6', () => {
   it('can find the location of the start of packet marker position', async function () {
     expect(
-      await findStartOfPacketMarkerPosition('bvwbjplbgvbhsrlpgdmjqwftvncz'),
+      findStartOfPacketMarkerPosition('bvwbjplbgvbhsrlpgdmjqwftvncz'),
     ).toEqual(5);
     expect(
-      await findStartOfPacketMarkerPosition('nppdvjthqldpwncqszvftbrmjlhg'),
+      findStartOfPacketMarkerPosition('nppdvjthqldpwncqszvftbrmjlhg'),
     ).toEqual(6);
   });
 
   it('can find the location of the start of message marker position', async function () {
     expect(
-      await findStartOfMessageMarkerPosition('bvwbjplbgvbhsrlpgdmjqwftvncz'),
+      findStartOfMessageMarkerPosition('bvwbjplbgvbhsrlpgdmjqwftvncz'),
     ).toEqual(23);
     expect(
-      await findStartOfMessageMarkerPosition('nppdvjthqldpwncqszvftbrmjlhg'),
+      findStartOfMessageMarkerPosition('nppdvjthqldpwncqszvftbrmjlhg'),
     ).toEqual(23);
   });
 

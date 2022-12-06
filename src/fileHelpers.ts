@@ -9,3 +9,7 @@ export async function* readLines(path: string): AsyncGenerator<string> {
     yield line;
   }
 }
+
+export async function readSingleLine(path: string): Promise<string> {
+  return (await (await readLines(path)).next()).value;
+}
