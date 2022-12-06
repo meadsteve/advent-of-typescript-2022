@@ -1,6 +1,7 @@
 import {
   aFilter,
   count,
+  enumerate,
   fromAsyncGenerator,
   groupsOfN,
   largest,
@@ -18,6 +19,16 @@ describe('async helpers', () => {
       [1, 2, 3],
       [2, 3, 4],
       [3, 4, 5],
+    ]);
+  });
+
+  it('can enumerate a generator', async function () {
+    const input = toAsyncGenerator(['zero', 'one', 'two']);
+    const result = await fromAsyncGenerator(enumerate(input));
+    expect(result).toEqual([
+      [0, 'zero'],
+      [1, 'one'],
+      [2, 'two'],
     ]);
   });
 

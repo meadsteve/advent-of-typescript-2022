@@ -12,6 +12,16 @@ export async function* aMap<TIn, TOut>(
   }
 }
 
+export async function* enumerate<T>(
+  input: AsyncGenerator<T>,
+): AsyncGenerator<[number, T]> {
+  let counter = 0;
+  for await (const x of input) {
+    yield [counter, x];
+    counter++;
+  }
+}
+
 export async function* aFilter<T>(
   input: AsyncGenerator<T>,
   fn: (x: T) => boolean,
