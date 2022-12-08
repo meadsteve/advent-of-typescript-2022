@@ -7,8 +7,20 @@ export async function solvePartOne() {
 }
 
 export async function solvePartTwo() {
-  const lines = readLines('src/day037/input.txt');
-  return 'todo';
+  const lines = readLines('src/day07/input.txt');
+  return (await findDirToDelete(lines)).size.toString();
+}
+
+export async function findDirToDelete(
+  lines: AsyncGenerator<string>,
+): Promise<Directory> {
+  const disk = await buildDisk(lines);
+  const freeSpace = 70000000 - disk.size;
+  const needToFree = 30000000 - freeSpace;
+  const dirsBigEnough = disk.subDirectories
+    .filter((d) => d.size >= needToFree)
+    .sort((a, b) => a.size - b.size);
+  return dirsBigEnough[0];
 }
 
 export class Directory {
@@ -98,13 +110,18 @@ async function populateDiskBasedOnCommands(
   }
 }
 
-export async function findDirectorySizesLessThan100k(
-  input: AsyncGenerator<string>,
-): Promise<number[]> {
+async function buildDisk(input: AsyncGenerator<string>) {
   const commandsAndResults = parseInput(input);
   const disk = new Directory('');
   disk.createDirectory('/');
   await populateDiskBasedOnCommands(disk, commandsAndResults);
+  return disk.openDirectory('/');
+}
+
+export async function findDirectorySizesLessThan100k(
+  input: AsyncGenerator<string>,
+): Promise<number[]> {
+  const disk = await buildDisk(input);
   return disk.subDirectories.filter((d) => d.size < 100000).map((d) => d.size);
 }
 

@@ -2,6 +2,7 @@ import {
   Directory,
   File,
   findDirectorySizesLessThan100k,
+  findDirToDelete,
   parseInput,
   solvePartTwo,
 } from '../../src/day07';
@@ -91,33 +92,40 @@ describe('day 7', () => {
     });
   });
   describe('the solution', () => {
+    const example = [
+      '$ cd /',
+      '$ ls',
+      'dir a',
+      '14848514 b.txt',
+      '8504156 c.dat',
+      'dir d',
+      '$ cd a',
+      '$ ls',
+      'dir e',
+      '29116 f',
+      '2557 g',
+      '62596 h.lst',
+      '$ cd e',
+      '$ ls',
+      '584 i',
+      '$ cd ..',
+      '$ cd ..',
+      '$ cd d',
+      '$ ls',
+      '4060174 j',
+      '8033020 d.log',
+      '5626152 d.ext',
+      '7214296 k',
+    ];
+
     it('should solve the example in part 1', async function () {
-      const input = toAsyncGenerator([
-        '$ cd /',
-        '$ ls',
-        'dir a',
-        '14848514 b.txt',
-        '8504156 c.dat',
-        'dir d',
-        '$ cd a',
-        '$ ls',
-        'dir e',
-        '29116 f',
-        '2557 g',
-        '62596 h.lst',
-        '$ cd e',
-        '$ ls',
-        '584 i',
-        '$ cd ..',
-        '$ cd ..',
-        '$ cd d',
-        '$ ls',
-        '4060174 j',
-        '8033020 d.log',
-        '5626152 d.ext',
-        '7214296 k',
-      ]);
+      const input = toAsyncGenerator(example);
       expect(await findDirectorySizesLessThan100k(input)).toEqual([94853, 584]);
+    });
+
+    it('should solve the example in part 2', async function () {
+      const input = toAsyncGenerator(example);
+      expect((await findDirToDelete(input)).name).toEqual('d');
     });
 
     it('should solve part one', async function () {
@@ -125,7 +133,7 @@ describe('day 7', () => {
     });
 
     it('should solve part two', async function () {
-      expect(await solvePartTwo()).toEqual('0');
+      expect(await solvePartTwo()).toEqual('1544176');
     });
   });
 });
