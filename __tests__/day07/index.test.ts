@@ -1,36 +1,11 @@
-import { Directory, File } from '../../src/day07';
+import {
+  Directory,
+  File,
+  findDirectorySizesLessThan100k,
+  parseInput,
+} from '../../src/day07';
 import { fromAsyncGenerator, toAsyncGenerator } from '../../src/asyncHelpers';
-
-type Command = { command: 'ls' } | { command: 'cd'; args: string };
-type CommandAndResult = [Command, string[]];
-
-async function* parseInput(
-  input: AsyncGenerator<string>,
-): AsyncGenerator<CommandAndResult> {
-  let command: Command = parseCommand((await input.next()).value);
-  let result: string[] = [];
-  for await (const line of input) {
-    if (line[0] === '$') {
-      yield [command, result];
-      result = [];
-      command = parseCommand(line);
-    } else {
-      result.push(line);
-    }
-  }
-  yield [command, result];
-}
-
-function parseCommand(command: string): Command {
-  const [_dollar, commandName, ...args] = command.split(' ');
-  if (commandName === 'ls') {
-    return { command: 'ls' };
-  } else if (commandName === 'cd') {
-    return { command: 'cd', args: args.join(' ') };
-  } else {
-    throw new Error(`Unknown command ${commandName}`);
-  }
-}
+import { solvePartOne } from '../../src/day07';
 
 describe('day 7', () => {
   describe('The file system', () => {
@@ -53,6 +28,15 @@ describe('day 7', () => {
 
       const a = root.openDirectory('a');
       expect(a.name).toEqual('a');
+    });
+
+    it('is possible to recursively iterate over all sub dirs', async function () {
+      const root = new Directory('/');
+
+      root.createDirectory('a').openDirectory('a').createDirectory('a-2');
+      root.createDirectory('b');
+
+      expect(root.subDirectories.map((d) => d.name)).toEqual(['a', 'a-2', 'b']);
     });
 
     it('is possible to select the parent directory using ..', async function () {
@@ -103,6 +87,40 @@ describe('day 7', () => {
         ],
         [{ command: 'cd', args: 'a' }, []],
       ]);
+    });
+  });
+  describe('the solution', () => {
+    it('should solve the example in part 1', async function () {
+      const input = toAsyncGenerator([
+        '$ cd /',
+        '$ ls',
+        'dir a',
+        '14848514 b.txt',
+        '8504156 c.dat',
+        'dir d',
+        '$ cd a',
+        '$ ls',
+        'dir e',
+        '29116 f',
+        '2557 g',
+        '62596 h.lst',
+        '$ cd e',
+        '$ ls',
+        '584 i',
+        '$ cd ..',
+        '$ cd ..',
+        '$ cd d',
+        '$ ls',
+        '4060174 j',
+        '8033020 d.log',
+        '5626152 d.ext',
+        '7214296 k',
+      ]);
+      expect(await findDirectorySizesLessThan100k(input)).toEqual([94853, 584]);
+    });
+
+    it('should solve part one', async function () {
+      expect(await solvePartOne()).toEqual('0');
     });
   });
 });

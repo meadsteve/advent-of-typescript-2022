@@ -2,7 +2,8 @@ import { readLines } from '../fileHelpers';
 
 export async function solvePartOne() {
   const lines = readLines('src/day07/input.txt');
-  return 'todo';
+  const sizes = await findDirectorySizesLessThan100k(lines);
+  return sizes.reduce((t, n) => t + n).toString();
 }
 
 export async function solvePartTwo() {
@@ -13,7 +14,7 @@ export async function solvePartTwo() {
 export class Directory {
   readonly name: string;
   private readonly parent?: Directory;
-  private subDirectories = new Map<string, Directory>();
+  private directSubDirectories = new Map<string, Directory>();
   private files = [] as File[];
 
   constructor(name: string, parent?: Directory) {
@@ -22,12 +23,20 @@ export class Directory {
   }
 
   createDirectory(name: string): Directory {
-    this.subDirectories.set(name, new Directory(name, this));
+    this.directSubDirectories.set(name, new Directory(name, this));
     return this;
   }
 
   get subDirectoryNames(): string[] {
-    return Array.from(this.subDirectories.values()).map((child) => child.name);
+    return Array.from(this.directSubDirectories.values()).map(
+      (child) => child.name,
+    );
+  }
+
+  get subDirectories(): Directory[] {
+    return Array.from(this.directSubDirectories.values()).flatMap(
+      (directory) => [directory, ...directory.subDirectories],
+    );
   }
 
   get fileNames(): string[] {
@@ -36,7 +45,7 @@ export class Directory {
 
   get size(): number {
     const fileSize = this.files.reduce((total, file) => total + file.size, 0);
-    const directorySize = Array.from(this.subDirectories.values()).reduce(
+    const directorySize = Array.from(this.directSubDirectories.values()).reduce(
       (total, directory) => total + directory.size,
       0,
     );
@@ -44,9 +53,10 @@ export class Directory {
   }
 
   openDirectory(name: string): Directory {
-    const child = name === '..' ? this.parent : this.subDirectories.get(name);
+    const child =
+      name === '..' ? this.parent : this.directSubDirectories.get(name);
     if (!(child instanceof Directory)) {
-      throw new Error('No such directory');
+      throw new Error(`No such directory: ${name}`);
     }
     return child;
   }
@@ -64,5 +74,67 @@ export class File {
   constructor(name: string, size: number) {
     this.name = name;
     this.size = size;
+  }
+}
+
+async function populateDiskBasedOnCommands(
+  disk: Directory,
+  commandsAndResults: AsyncGenerator<CommandAndResult>,
+) {
+  let currentDirectory = disk;
+  for await (const [command, result] of commandsAndResults) {
+    if (command.command === 'cd') {
+      currentDirectory = currentDirectory.openDirectory(command.args);
+    } else if (command.command === 'ls') {
+      for (const line of result) {
+        const [a, b] = line.split(' ');
+        if (a === 'dir') {
+          currentDirectory.createDirectory(b);
+        } else {
+          currentDirectory.addFile(new File(b, parseInt(a)));
+        }
+      }
+    }
+  }
+}
+
+export async function findDirectorySizesLessThan100k(
+  input: AsyncGenerator<string>,
+): Promise<number[]> {
+  const commandsAndResults = parseInput(input);
+  const disk = new Directory('');
+  disk.createDirectory('/');
+  await populateDiskBasedOnCommands(disk, commandsAndResults);
+  return disk.subDirectories.filter((d) => d.size < 100000).map((d) => d.size);
+}
+
+type Command = { command: 'ls' } | { command: 'cd'; args: string };
+type CommandAndResult = [Command, string[]];
+
+export async function* parseInput(
+  input: AsyncGenerator<string>,
+): AsyncGenerator<CommandAndResult> {
+  let command: Command = parseCommand((await input.next()).value);
+  let result: string[] = [];
+  for await (const line of input) {
+    if (line[0] === '$') {
+      yield [command, result];
+      result = [];
+      command = parseCommand(line);
+    } else {
+      result.push(line);
+    }
+  }
+  yield [command, result];
+}
+
+function parseCommand(command: string): Command {
+  const [_dollar, commandName, ...args] = command.split(' ');
+  if (commandName === 'ls') {
+    return { command: 'ls' };
+  } else if (commandName === 'cd') {
+    return { command: 'cd', args: args.join(' ') };
+  } else {
+    throw new Error(`Unknown command ${commandName}`);
   }
 }
