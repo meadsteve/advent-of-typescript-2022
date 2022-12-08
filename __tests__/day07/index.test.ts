@@ -3,6 +3,7 @@ import {
   File,
   findDirectorySizesLessThan100k,
   parseInput,
+  solvePartTwo,
 } from '../../src/day07';
 import { fromAsyncGenerator, toAsyncGenerator } from '../../src/asyncHelpers';
 import { solvePartOne } from '../../src/day07';
@@ -120,7 +121,11 @@ describe('day 7', () => {
     });
 
     it('should solve part one', async function () {
-      expect(await solvePartOne()).toEqual('0');
+      expect(await solvePartOne()).toEqual('1581595');
+    });
+
+    it('should solve part two', async function () {
+      expect(await solvePartTwo()).toEqual('0');
     });
   });
 });
